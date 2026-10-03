@@ -1,0 +1,1856 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+/* =========================================================
+   BLOODCARE — PREMIUM HEALTHCARE UI
+   Master stylesheet
+   ========================================================= */
+
+:root {
+    --primary: #b3122d;
+    --primary-dark: #8e0e24;
+    --primary-light: #fce8ec;
+    --primary-soft: #fff5f7;
+    --primary-glow: rgba(179, 18, 45, 0.18);
+
+    --navy: #17243a;
+    --navy-2: #22324d;
+    --navy-3: #30415d;
+
+    --bg: #f5f7fa;
+    --card: #ffffff;
+
+    --text: #17243a;
+    --muted: #697586;
+    --muted-light: #98a2b3;
+
+    --border: #e5e7eb;
+    --border-light: #eef0f3;
+
+    --success: #16a34a;
+    --success-light: #eaf8ef;
+
+    --warning: #d97706;
+    --warning-light: #fff6e5;
+
+    --danger: #dc2626;
+    --danger-light: #feecec;
+
+    --info: #2563eb;
+    --info-light: #eaf1ff;
+
+    --shadow-xs: 0 1px 3px rgba(23, 36, 58, 0.04);
+    --shadow-sm: 0 4px 12px rgba(23, 36, 58, 0.055);
+    --shadow-md: 0 10px 28px rgba(23, 36, 58, 0.09);
+    --shadow-lg: 0 18px 45px rgba(23, 36, 58, 0.12);
+
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+
+    --transition-fast: 0.18s ease;
+    --transition: 0.25s ease;
+}
+
+
+/* =========================================================
+   GLOBAL
+   ========================================================= */
+
+html {
+    scroll-behavior: smooth;
+}
+
+html,
+body,
+[class*="css"],
+.stApp {
+    font-family: "Inter", sans-serif;
+    color: var(--text);
+}
+
+.stApp {
+    background:
+        radial-gradient(
+            circle at 90% 0%,
+            rgba(179, 18, 45, 0.035),
+            transparent 28%
+        ),
+        radial-gradient(
+            circle at 10% 100%,
+            rgba(37, 99, 235, 0.018),
+            transparent 25%
+        ),
+        var(--bg);
+}
+
+
+/* =========================================================
+   STREAMLIT CLEANUP
+   ========================================================= */
+
+#MainMenu,
+footer {
+    visibility: hidden;
+    height: 0;
+}
+
+header[data-testid="stHeader"] {
+    background: transparent;
+}
+
+div[data-testid="stDecoration"],
+div[data-testid="stToolbarActions"],
+div[data-testid="stMainMenu"],
+.stAppDeployButton {
+    display: none !important;
+}
+
+
+/* =========================================================
+   MAIN CONTENT
+   ========================================================= */
+
+.block-container {
+    max-width: 1320px;
+    padding-top: 1.8rem;
+    padding-bottom: 3.5rem;
+    animation: pageEnter 0.45s ease both;
+}
+
+@keyframes pageEnter {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
+
+section[data-testid="stSidebar"] {
+    background:
+        linear-gradient(
+            180deg,
+            #17243a 0%,
+            #1a2942 48%,
+            #142137 100%
+        );
+
+    border-right: none;
+
+    box-shadow:
+        8px 0 30px rgba(23, 36, 58, 0.10);
+
+    transition:
+        width 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+section[data-testid="stSidebar"] * {
+    color: #e8edf5;
+}
+
+
+/* Sidebar scrollbar */
+
+section[data-testid="stSidebar"]::-webkit-scrollbar {
+    width: 5px;
+}
+
+section[data-testid="stSidebar"]::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+section[data-testid="stSidebar"]::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 999px;
+}
+
+
+/* =========================================================
+   SIDEBAR BRAND
+   ========================================================= */
+
+.sidebar-brand {
+    font-size: 1.4rem;
+    font-weight: 800;
+    letter-spacing: -0.035em;
+
+    color: #ffffff !important;
+
+    padding:
+        0.65rem
+        0
+        1.15rem
+        0;
+
+    border-bottom:
+        1px solid rgba(255, 255, 255, 0.09);
+
+    margin-bottom: 1rem;
+
+    position: relative;
+}
+
+.sidebar-brand::before {
+    content: "";
+    display: inline-block;
+
+    width: 8px;
+    height: 8px;
+
+    margin-right: 8px;
+
+    border-radius: 50%;
+
+    background: var(--primary);
+
+    box-shadow:
+        0 0 0 5px rgba(179, 18, 45, 0.14);
+}
+
+
+/* =========================================================
+   SIDEBAR SUBTITLE
+   ========================================================= */
+
+.sidebar-subtitle {
+    font-size: 0.66rem;
+    font-weight: 600;
+
+    letter-spacing: 0.13em;
+
+    color: #8fa0b7 !important;
+
+    margin-top: -0.75rem;
+    margin-bottom: 1.25rem;
+}
+
+
+/* =========================================================
+   SIDEBAR NAVIGATION
+   ========================================================= */
+
+section[data-testid="stSidebar"]
+div[role="radiogroup"] {
+    gap: 0.3rem;
+}
+
+section[data-testid="stSidebar"]
+div[role="radiogroup"] label {
+    width: 100%;
+
+    padding:
+        0.72rem
+        0.85rem;
+
+    border-radius: 11px;
+
+    cursor: pointer;
+
+    margin-bottom: 2px;
+
+    transition:
+        background var(--transition),
+        transform var(--transition),
+        box-shadow var(--transition);
+
+    position: relative;
+}
+
+section[data-testid="stSidebar"]
+div[role="radiogroup"] label:hover {
+    background: rgba(255, 255, 255, 0.065);
+
+    transform: translateX(3px);
+}
+
+section[data-testid="stSidebar"]
+div[role="radiogroup"]
+label > div:first-child {
+    display: none;
+}
+
+
+/* Active navigation */
+
+section[data-testid="stSidebar"]
+div[role="radiogroup"]
+label:has(input:checked) {
+    background:
+        linear-gradient(
+            100deg,
+            #b3122d 0%,
+            #c91d3d 100%
+        );
+
+    box-shadow:
+        0 7px 20px rgba(179, 18, 45, 0.27);
+
+    transform: translateX(2px);
+}
+
+section[data-testid="stSidebar"]
+div[role="radiogroup"]
+label:has(input:checked)::before {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    top: 20%;
+
+    width: 3px;
+    height: 60%;
+
+    background: #ffffff;
+
+    border-radius: 0 5px 5px 0;
+}
+
+section[data-testid="stSidebar"]
+div[role="radiogroup"]
+label:has(input:checked) * {
+    color: #ffffff !important;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   SIDEBAR USER
+   ========================================================= */
+
+.sidebar-user {
+    font-size: 0.78rem;
+
+    color: #91a0b5 !important;
+
+    margin-top: 1.5rem;
+
+    padding-top: 1rem;
+
+    border-top:
+        1px solid rgba(255, 255, 255, 0.08);
+}
+
+
+/* =========================================================
+   SIDEBAR COLLAPSE BUTTON
+   ========================================================= */
+
+[data-testid="stExpandSidebarButton"],
+[data-testid="collapsedControl"],
+[data-testid="stSidebarCollapsedControl"] {
+    visibility: visible !important;
+    display: flex !important;
+
+    color: var(--navy) !important;
+
+    transition:
+        transform var(--transition),
+        box-shadow var(--transition);
+}
+
+[data-testid="stExpandSidebarButton"]:hover,
+[data-testid="collapsedControl"]:hover,
+[data-testid="stSidebarCollapsedControl"]:hover {
+    transform: scale(1.04);
+}
+
+
+/* =========================================================
+   HEADINGS
+   ========================================================= */
+
+h1,
+h2,
+h3,
+h4 {
+    color: var(--navy) !important;
+
+    letter-spacing: -0.028em;
+}
+
+h1 {
+    font-weight: 800 !important;
+}
+
+h2 {
+    font-weight: 750 !important;
+}
+
+h3 {
+    font-weight: 700 !important;
+}
+
+h4 {
+    font-weight: 700 !important;
+}
+
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+
+.stButton > button,
+.stFormSubmitButton > button {
+    width: 100%;
+
+    min-height: 42px;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--primary),
+            #c91d3d
+        );
+
+    color: #ffffff;
+
+    border: none;
+
+    border-radius: 11px;
+
+    padding:
+        0.65rem
+        1.2rem;
+
+    font-family: "Inter", sans-serif;
+
+    font-size: 0.86rem;
+
+    font-weight: 650;
+
+    letter-spacing: -0.005em;
+
+    box-shadow:
+        0 5px 14px rgba(179, 18, 45, 0.18);
+
+    transition:
+        transform var(--transition),
+        box-shadow var(--transition),
+        background var(--transition);
+}
+
+.stButton > button:hover,
+.stFormSubmitButton > button:hover {
+    background:
+        linear-gradient(
+            135deg,
+            var(--primary-dark),
+            #aa1530
+        );
+
+    color: #ffffff;
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 9px 22px rgba(179, 18, 45, 0.25);
+}
+
+.stButton > button:active,
+.stFormSubmitButton > button:active {
+    transform: translateY(0);
+
+    box-shadow:
+        0 4px 10px rgba(179, 18, 45, 0.18);
+}
+
+
+/* Button focus */
+
+.stButton > button:focus,
+.stFormSubmitButton > button:focus {
+    outline: none;
+
+    box-shadow:
+        0 0 0 3px rgba(179, 18, 45, 0.12),
+        0 7px 18px rgba(179, 18, 45, 0.22);
+}
+
+
+/* =========================================================
+   CARDS
+   ========================================================= */
+
+.card {
+    position: relative;
+
+    background: var(--card);
+
+    border:
+        1px solid var(--border-light);
+
+    border-radius: var(--radius-lg);
+
+    padding: 1.35rem;
+
+    box-shadow: var(--shadow-sm);
+
+    transition:
+        transform var(--transition),
+        box-shadow var(--transition),
+        border-color var(--transition);
+
+    overflow: hidden;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+
+    box-shadow: var(--shadow-md);
+
+    border-color: #e0e4ea;
+}
+
+
+/* =========================================================
+   PREMIUM CARD SHINE
+   ========================================================= */
+
+.card::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: -100%;
+
+    width: 60%;
+    height: 1px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(179, 18, 45, 0.22),
+            transparent
+        );
+
+    transition: left 0.6s ease;
+}
+
+.card:hover::before {
+    left: 120%;
+}
+
+
+/* =========================================================
+   KPI CARDS
+   ========================================================= */
+
+.kpi-card {
+    position: relative;
+
+    background: var(--card);
+
+    border:
+        1px solid var(--border-light);
+
+    border-radius: var(--radius-lg);
+
+    padding:
+        1.2rem
+        1.3rem;
+
+    min-height: 105px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 1rem;
+
+    margin-bottom: 1rem;
+
+    box-shadow: var(--shadow-sm);
+
+    overflow: hidden;
+
+    transition:
+        transform var(--transition),
+        box-shadow var(--transition),
+        border-color var(--transition);
+}
+
+.kpi-card::after {
+    content: "";
+
+    position: absolute;
+
+    width: 120px;
+    height: 120px;
+
+    right: -48px;
+    top: -48px;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(179, 18, 45, 0.10),
+            transparent 68%
+        );
+
+    border-radius: 50%;
+
+    transition:
+        transform 0.35s ease;
+}
+
+.kpi-card:hover {
+    transform: translateY(-4px);
+
+    box-shadow: var(--shadow-md);
+
+    border-color: #e0e4ea;
+}
+
+.kpi-card:hover::after {
+    transform: scale(1.25);
+}
+
+
+/* KPI icon */
+
+.kpi-icon {
+    width: 48px;
+    height: 48px;
+
+    border-radius: 13px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size: 1.35rem;
+
+    flex-shrink: 0;
+
+    position: relative;
+
+    z-index: 1;
+
+    transition:
+        transform var(--transition);
+}
+
+.kpi-card:hover .kpi-icon {
+    transform: scale(1.06) rotate(-2deg);
+}
+
+.kpi-red {
+    background: var(--danger-light);
+}
+
+.kpi-green {
+    background: var(--success-light);
+}
+
+.kpi-amber {
+    background: var(--warning-light);
+}
+
+.kpi-blue {
+    background: var(--info-light);
+}
+
+
+/* KPI text */
+
+.kpi-value {
+    font-size: 1.75rem;
+
+    font-weight: 800;
+
+    line-height: 1.1;
+
+    letter-spacing: -0.04em;
+
+    color: var(--navy);
+
+    position: relative;
+
+    z-index: 1;
+}
+
+.kpi-label {
+    color: var(--muted);
+
+    font-size: 0.78rem;
+
+    font-weight: 500;
+
+    margin-top: 0.3rem;
+
+    position: relative;
+
+    z-index: 1;
+}
+
+.kpi-note {
+    font-size: 0.72rem;
+
+    font-weight: 650;
+
+    margin-top: 0.35rem;
+}
+
+.kpi-note.up {
+    color: var(--success);
+}
+
+.kpi-note.warn {
+    color: var(--warning);
+}
+
+.kpi-note.down {
+    color: var(--danger);
+}
+
+
+/* =========================================================
+   BADGES
+   ========================================================= */
+
+.badge {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding:
+        0.27rem
+        0.68rem;
+
+    border-radius: 999px;
+
+    font-size: 0.7rem;
+
+    font-weight: 700;
+
+    line-height: 1.2;
+
+    white-space: nowrap;
+}
+
+.badge-success {
+    background: var(--success-light);
+    color: var(--success);
+}
+
+.badge-warning {
+    background: var(--warning-light);
+    color: var(--warning);
+}
+
+.badge-danger {
+    background: var(--danger-light);
+    color: var(--danger);
+}
+
+.badge-info {
+    background: var(--info-light);
+    color: var(--info);
+}
+
+
+/* =========================================================
+   INPUTS
+   ========================================================= */
+
+div[data-baseweb="input"],
+div[data-baseweb="select"],
+div[data-baseweb="textarea"] {
+    border-radius: 11px;
+}
+
+div[data-baseweb="input"] input,
+div[data-baseweb="textarea"] textarea {
+    font-family: "Inter", sans-serif;
+
+    color: var(--text);
+}
+
+div[data-baseweb="input"] > div,
+div[data-baseweb="textarea"] > div {
+    border-radius: 11px;
+
+    border-color: var(--border);
+}
+
+div[data-baseweb="input"]:focus-within,
+div[data-baseweb="textarea"]:focus-within {
+    border-color: var(--primary) !important;
+
+    box-shadow:
+        0 0 0 3px rgba(179, 18, 45, 0.075);
+}
+
+
+/* =========================================================
+   INPUT LABELS
+   ========================================================= */
+
+.stTextInput label,
+.stTextArea label,
+.stNumberInput label,
+.stSelectbox label,
+.stMultiSelect label,
+.stDateInput label,
+.stTimeInput label {
+    color: var(--navy) !important;
+
+    font-size: 0.78rem !important;
+
+    font-weight: 650 !important;
+}
+
+
+/* =========================================================
+   SELECTBOX
+   ========================================================= */
+
+div[data-baseweb="select"] > div {
+    border-radius: 11px;
+
+    border-color: var(--border);
+
+    background: #ffffff;
+}
+
+div[data-baseweb="select"] > div:hover {
+    border-color: #cbd2dc;
+}
+
+
+/* =========================================================
+   CHECKBOX / RADIO
+   ========================================================= */
+
+.stCheckbox label,
+.stRadio label {
+    font-size: 0.82rem;
+
+    font-weight: 500;
+}
+
+.stCheckbox label:hover,
+.stRadio label:hover {
+    color: var(--primary);
+}
+
+
+/* =========================================================
+   DATAFRAME / TABLE
+   ========================================================= */
+
+div[data-testid="stDataFrame"] {
+    border-radius: 14px;
+
+    overflow: hidden;
+
+    border:
+        1px solid var(--border-light);
+
+    box-shadow: var(--shadow-sm);
+
+    background: #ffffff;
+}
+
+
+/* =========================================================
+   ALERTS
+   ========================================================= */
+
+div[data-testid="stAlert"] {
+    border-radius: 13px;
+
+    border:
+        1px solid var(--border-light);
+
+    box-shadow: var(--shadow-xs);
+
+    animation: alertEnter 0.3s ease both;
+}
+
+@keyframes alertEnter {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* =========================================================
+   DIVIDERS
+   ========================================================= */
+
+hr {
+    border: none;
+
+    border-top:
+        1px solid var(--border-light);
+
+    margin:
+        1.3rem 0;
+}
+
+
+/* =========================================================
+   TOPBAR
+   ========================================================= */
+
+.topbar-bell {
+    position: relative;
+
+    width: 44px;
+    height: 44px;
+
+    background: var(--card);
+
+    border:
+        1px solid var(--border);
+
+    border-radius: 12px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size: 1.15rem;
+
+    box-shadow: var(--shadow-sm);
+
+    cursor: pointer;
+
+    transition:
+        transform var(--transition),
+        box-shadow var(--transition),
+        border-color var(--transition);
+}
+
+.topbar-bell:hover {
+    transform: translateY(-2px);
+
+    box-shadow: var(--shadow-md);
+
+    border-color: #d8dde5;
+}
+
+.topbar-bell:hover::after {
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    border-radius: 12px;
+
+    box-shadow:
+        0 0 0 4px rgba(179, 18, 45, 0.05);
+}
+
+
+/* =========================================================
+   NOTIFICATION BADGE
+   ========================================================= */
+
+.bell-badge {
+    position: absolute;
+
+    top: -6px;
+    right: -6px;
+
+    min-width: 20px;
+    height: 20px;
+
+    padding: 0 5px;
+
+    background: var(--primary);
+
+    color: #ffffff;
+
+    border-radius: 999px;
+
+    font-size: 0.68rem;
+
+    font-weight: 800;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border:
+        2px solid var(--bg);
+
+    animation: notificationPulse 2.2s infinite;
+}
+
+@keyframes notificationPulse {
+    0%,
+    100% {
+        box-shadow: 0 0 0 0 rgba(179, 18, 45, 0.20);
+    }
+
+    50% {
+        box-shadow: 0 0 0 5px rgba(179, 18, 45, 0.04);
+    }
+}
+
+
+/* =========================================================
+   TOPBAR USER
+   ========================================================= */
+
+.topbar-user {
+    display: flex;
+
+    align-items: center;
+
+    gap: 0.7rem;
+
+    background: var(--card);
+
+    border:
+        1px solid var(--border);
+
+    border-radius: 12px;
+
+    padding:
+        0.35rem
+        0.85rem
+        0.35rem
+        0.4rem;
+
+    box-shadow: var(--shadow-sm);
+
+    transition:
+        transform var(--transition),
+        box-shadow var(--transition),
+        border-color var(--transition);
+}
+
+.topbar-user:hover {
+    transform: translateY(-1px);
+
+    box-shadow: var(--shadow-md);
+
+    border-color: #d8dde5;
+}
+
+
+/* =========================================================
+   TOPBAR AVATAR
+   ========================================================= */
+
+.topbar-avatar {
+    width: 34px;
+    height: 34px;
+
+    border-radius: 10px;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--primary),
+            #c91d3d
+        );
+
+    color: #ffffff;
+
+    font-weight: 800;
+
+    font-size: 0.82rem;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    box-shadow:
+        0 4px 10px rgba(179, 18, 45, 0.18);
+}
+
+.topbar-name {
+    font-size: 0.82rem;
+
+    font-weight: 700;
+
+    color: var(--navy);
+
+    line-height: 1.2;
+}
+
+.topbar-role {
+    font-size: 0.68rem;
+
+    color: var(--muted);
+
+    margin-top: 2px;
+}
+
+
+/* =========================================================
+   PAGE TITLE
+   ========================================================= */
+
+.dashboard-title,
+.page-title {
+    color: var(--navy);
+
+    font-size: 1.9rem;
+
+    font-weight: 800;
+
+    letter-spacing: -0.045em;
+
+    line-height: 1.15;
+
+    margin-bottom: 0.25rem;
+}
+
+.dashboard-subtitle,
+.page-subtitle {
+    color: var(--muted);
+
+    font-size: 0.8rem;
+
+    font-weight: 500;
+
+    margin-bottom: 1rem;
+}
+
+
+/* =========================================================
+   SECTION HEADER
+   ========================================================= */
+
+.section-title {
+    font-size: 1rem;
+
+    font-weight: 750;
+
+    color: var(--navy);
+
+    margin-bottom: 0.2rem;
+}
+
+.section-subtitle {
+    font-size: 0.78rem;
+
+    color: var(--muted);
+
+    margin-bottom: 1rem;
+}
+
+
+/* =========================================================
+   SYSTEM STATUS
+   ========================================================= */
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+
+    display: inline-block;
+
+    border-radius: 50%;
+
+    background: var(--success);
+
+    box-shadow:
+        0 0 0 4px rgba(22, 163, 74, 0.11);
+
+    margin-right: 7px;
+
+    animation: statusPulse 2.4s infinite;
+}
+
+@keyframes statusPulse {
+    0%,
+    100% {
+        box-shadow:
+            0 0 0 4px rgba(22, 163, 74, 0.11);
+    }
+
+    50% {
+        box-shadow:
+            0 0 0 7px rgba(22, 163, 74, 0.025);
+    }
+}
+
+.system-status {
+    display: inline-flex;
+
+    align-items: center;
+
+    padding:
+        0.45rem
+        0.8rem;
+
+    border-radius: 999px;
+
+    background: var(--success-light);
+
+    color: var(--success);
+
+    font-size: 0.72rem;
+
+    font-weight: 700;
+
+    border:
+        1px solid rgba(22, 163, 74, 0.12);
+}
+
+
+/* =========================================================
+   STATUS / STOCK INDICATORS
+   ========================================================= */
+
+.stock-good {
+    color: var(--success);
+
+    background: var(--success-light);
+
+    padding:
+        0.25rem
+        0.65rem;
+
+    border-radius: 999px;
+
+    font-size: 0.7rem;
+
+    font-weight: 700;
+}
+
+.stock-medium {
+    color: var(--warning);
+
+    background: var(--warning-light);
+
+    padding:
+        0.25rem
+        0.65rem;
+
+    border-radius: 999px;
+
+    font-size: 0.7rem;
+
+    font-weight: 700;
+}
+
+.stock-low {
+    color: var(--danger);
+
+    background: var(--danger-light);
+
+    padding:
+        0.25rem
+        0.65rem;
+
+    border-radius: 999px;
+
+    font-size: 0.7rem;
+
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   METRIC / STAT PANELS
+   ========================================================= */
+
+.stat-panel {
+    background: #ffffff;
+
+    border:
+        1px solid var(--border-light);
+
+    border-radius: var(--radius-lg);
+
+    padding: 1.2rem;
+
+    box-shadow: var(--shadow-sm);
+
+    transition:
+        transform var(--transition),
+        box-shadow var(--transition);
+}
+
+.stat-panel:hover {
+    transform: translateY(-2px);
+
+    box-shadow: var(--shadow-md);
+}
+
+.stat-value {
+    color: var(--navy);
+
+    font-size: 1.6rem;
+
+    font-weight: 800;
+
+    letter-spacing: -0.04em;
+}
+
+.stat-label {
+    color: var(--muted);
+
+    font-size: 0.74rem;
+
+    font-weight: 500;
+
+    margin-top: 0.25rem;
+}
+
+
+/* =========================================================
+   CHART CONTAINERS
+   ========================================================= */
+
+.chart-card {
+    background: #ffffff;
+
+    border:
+        1px solid var(--border-light);
+
+    border-radius: var(--radius-lg);
+
+    padding: 1.25rem;
+
+    box-shadow: var(--shadow-sm);
+
+    transition:
+        box-shadow var(--transition),
+        transform var(--transition);
+}
+
+.chart-card:hover {
+    transform: translateY(-2px);
+
+    box-shadow: var(--shadow-md);
+}
+
+
+/* Plotly charts */
+
+div[data-testid="stPlotlyChart"] {
+    border-radius: 14px;
+
+    overflow: hidden;
+
+    transition:
+        transform var(--transition),
+        box-shadow var(--transition);
+}
+
+div[data-testid="stPlotlyChart"]:hover {
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   EXPANDERS
+   ========================================================= */
+
+div[data-testid="stExpander"] {
+    border:
+        1px solid var(--border-light);
+
+    border-radius: 13px;
+
+    background: #ffffff;
+
+    box-shadow: var(--shadow-xs);
+
+    overflow: hidden;
+}
+
+div[data-testid="stExpander"]:hover {
+    border-color: #dfe4eb;
+}
+
+
+/* =========================================================
+   TABS
+   ========================================================= */
+
+button[data-baseweb="tab"] {
+    font-family: "Inter", sans-serif;
+
+    font-size: 0.8rem;
+
+    font-weight: 600;
+
+    color: var(--muted);
+
+    transition:
+        color var(--transition);
+}
+
+button[data-baseweb="tab"]:hover {
+    color: var(--primary);
+}
+
+
+/* =========================================================
+   SPINNER
+   ========================================================= */
+
+div[data-testid="stSpinner"] {
+    color: var(--primary);
+}
+
+
+/* =========================================================
+   SUCCESS / ERROR / WARNING TEXT
+   ========================================================= */
+
+.success-text {
+    color: var(--success);
+
+    font-weight: 650;
+}
+
+.warning-text {
+    color: var(--warning);
+
+    font-weight: 650;
+}
+
+.danger-text {
+    color: var(--danger);
+
+    font-weight: 650;
+}
+
+.info-text {
+    color: var(--info);
+
+    font-weight: 650;
+}
+
+
+/* =========================================================
+   RECENT ACTIVITY
+   ========================================================= */
+
+.activity-item {
+    display: flex;
+
+    align-items: center;
+
+    gap: 0.8rem;
+
+    padding:
+        0.8rem
+        0;
+
+    border-bottom:
+        1px solid var(--border-light);
+
+    transition:
+        padding-left var(--transition),
+        background var(--transition);
+}
+
+.activity-item:hover {
+    padding-left: 5px;
+}
+
+.activity-item:last-child {
+    border-bottom: none;
+}
+
+.activity-icon {
+    width: 36px;
+    height: 36px;
+
+    border-radius: 10px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background: var(--primary-light);
+
+    color: var(--primary);
+
+    flex-shrink: 0;
+}
+
+.activity-title {
+    font-size: 0.8rem;
+
+    font-weight: 650;
+
+    color: var(--navy);
+}
+
+.activity-time {
+    font-size: 0.68rem;
+
+    color: var(--muted);
+}
+
+
+/* =========================================================
+   BLOOD GROUP CHIP
+   ========================================================= */
+
+.blood-chip {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    min-width: 42px;
+
+    height: 30px;
+
+    padding:
+        0 0.55rem;
+
+    border-radius: 9px;
+
+    background: var(--primary-light);
+
+    color: var(--primary);
+
+    font-size: 0.72rem;
+
+    font-weight: 800;
+
+    border:
+        1px solid rgba(179, 18, 45, 0.08);
+}
+
+
+/* =========================================================
+   SEARCH / FILTER AREA
+   ========================================================= */
+
+.filter-card {
+    background: #ffffff;
+
+    border:
+        1px solid var(--border-light);
+
+    border-radius: var(--radius-lg);
+
+    padding: 1rem;
+
+    box-shadow: var(--shadow-xs);
+
+    margin-bottom: 1rem;
+}
+
+
+/* =========================================================
+   FILE UPLOADER
+   ========================================================= */
+
+[data-testid="stFileUploader"] {
+    border-radius: 13px;
+}
+
+[data-testid="stFileUploaderDropzone"] {
+    border:
+        1px dashed #d3d9e2;
+
+    border-radius: 13px;
+
+    background: #fafbfc;
+
+    transition:
+        border-color var(--transition),
+        background var(--transition);
+}
+
+[data-testid="stFileUploaderDropzone"]:hover {
+    border-color: var(--primary);
+
+    background: var(--primary-soft);
+}
+
+
+/* =========================================================
+   TOAST
+   ========================================================= */
+
+div[data-testid="stToast"] {
+    border-radius: 12px;
+
+    box-shadow: var(--shadow-lg);
+}
+
+
+/* =========================================================
+   LINKS
+   ========================================================= */
+
+a {
+    color: var(--primary);
+
+    text-decoration: none;
+
+    transition:
+        color var(--transition);
+}
+
+a:hover {
+    color: var(--primary-dark);
+
+    text-decoration: none;
+}
+
+
+/* =========================================================
+   SCROLLBAR
+   ========================================================= */
+
+::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #cbd2dc;
+
+    border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #aab4c2;
+}
+
+
+/* =========================================================
+   SELECTION
+   ========================================================= */
+
+::selection {
+    background: rgba(179, 18, 45, 0.15);
+
+    color: var(--navy);
+}
+
+
+/* =========================================================
+   LOADING / SKELETON EFFECT
+   ========================================================= */
+
+.skeleton {
+    background:
+        linear-gradient(
+            90deg,
+            #f0f2f5 25%,
+            #f8f9fb 50%,
+            #f0f2f5 75%
+        );
+
+    background-size: 200% 100%;
+
+    animation:
+        skeletonLoading 1.5s infinite;
+}
+
+@keyframes skeletonLoading {
+    from {
+        background-position: 200% 0;
+    }
+
+    to {
+        background-position: -200% 0;
+    }
+}
+
+
+/* =========================================================
+   FADE / SLIDE UTILITIES
+   ========================================================= */
+
+.fade-in {
+    animation:
+        fadeIn 0.45s ease both;
+}
+
+.slide-up {
+    animation:
+        slideUp 0.45s ease both;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* =========================================================
+   STAGGERED CARD ANIMATION
+   ========================================================= */
+
+.kpi-card:nth-child(1) {
+    animation-delay: 0.03s;
+}
+
+.kpi-card:nth-child(2) {
+    animation-delay: 0.08s;
+}
+
+.kpi-card:nth-child(3) {
+    animation-delay: 0.13s;
+}
+
+.kpi-card:nth-child(4) {
+    animation-delay: 0.18s;
+}
+
+
+/* =========================================================
+   MOBILE / TABLET
+   ========================================================= */
+
+@media (max-width: 1100px) {
+    .block-container {
+        max-width: 100%;
+
+        padding-left: 1.3rem;
+        padding-right: 1.3rem;
+    }
+
+    .dashboard-title,
+    .page-title {
+        font-size: 1.7rem;
+    }
+}
+
+
+@media (max-width: 900px) {
+    .block-container {
+        padding-top: 1.3rem;
+
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    .kpi-card {
+        padding: 1rem;
+
+        min-height: 96px;
+    }
+
+    .kpi-value {
+        font-size: 1.5rem;
+    }
+
+    .dashboard-title,
+    .page-title {
+        font-size: 1.55rem;
+    }
+}
+
+
+@media (max-width: 600px) {
+    .block-container {
+        padding-top: 1rem;
+
+        padding-bottom: 2rem;
+    }
+
+    .kpi-card {
+        min-height: 90px;
+
+        padding: 0.9rem;
+    }
+
+    .kpi-icon {
+        width: 42px;
+        height: 42px;
+
+        border-radius: 11px;
+
+        font-size: 1.15rem;
+    }
+
+    .kpi-value {
+        font-size: 1.35rem;
+    }
+
+    .kpi-label {
+        font-size: 0.72rem;
+    }
+
+    .topbar-user {
+        padding-right: 0.5rem;
+    }
+
+    .dashboard-title,
+    .page-title {
+        font-size: 1.4rem;
+    }
+
+    .system-status {
+        font-size: 0.68rem;
+    }
+}
+
+
+/* =========================================================
+   REDUCE MOTION ACCESSIBILITY
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+
+        animation-iteration-count: 1 !important;
+
+        transition-duration: 0.01ms !important;
+
+        scroll-behavior: auto !important;
+    }
+}
+
