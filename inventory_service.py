@@ -1,3 +1,4 @@
+
 from sqlalchemy import text
 from database import engine
 
@@ -11,7 +12,6 @@ def get_inventory(
     blood_group="All",
     status="All"
 ):
-
     sql = """
         SELECT
             b.id,
@@ -23,59 +23,46 @@ def get_inventory(
             b.expiry_date,
             b.status,
             b.storage_location
-
         FROM blood_inventory b
-
         JOIN donors d
             ON d.id = b.donor_id
-
         WHERE 1 = 1
     """
 
     params = {}
-
 
     # --------------------------------------------------------
     # SEARCH
     # --------------------------------------------------------
 
     if search:
-
         sql += """
             AND (
                 b.unit_code LIKE :search
                 OR d.full_name LIKE :search
             )
         """
-
         params["search"] = f"%{search}%"
-
 
     # --------------------------------------------------------
     # BLOOD GROUP
     # --------------------------------------------------------
 
     if blood_group != "All":
-
         sql += """
             AND b.blood_group = :blood_group
         """
-
         params["blood_group"] = blood_group
-
 
     # --------------------------------------------------------
     # STATUS
     # --------------------------------------------------------
 
     if status != "All":
-
         sql += """
             AND b.status = :status
         """
-
         params["status"] = status
-
 
     # --------------------------------------------------------
     # SORT
@@ -85,18 +72,15 @@ def get_inventory(
         ORDER BY b.expiry_date ASC
     """
 
-
     # --------------------------------------------------------
     # EXECUTE
     # --------------------------------------------------------
 
     with engine.connect() as conn:
-
         rows = conn.execute(
             text(sql),
             params
         ).mappings().all()
-
 
     return [
         dict(row)
@@ -116,18 +100,14 @@ def get_donors():
             donor_code,
             full_name,
             blood_group
-
         FROM donors
-
         ORDER BY full_name
     """
 
     with engine.connect() as conn:
-
         rows = conn.execute(
             text(sql)
         ).mappings().all()
-
 
     return [
         dict(row)
@@ -158,9 +138,7 @@ def add_unit(
             text("""
                 SELECT
                     blood_group
-
                 FROM donors
-
                 WHERE id = :id
             """),
             {
@@ -168,16 +146,14 @@ def add_unit(
             }
         ).mappings().first()
 
-
         if donor is None:
-
             raise ValueError(
                 "Donor not found."
             )
 
-
         # ----------------------------------------------------
         # GENERATE UNIT CODE
+        # SQLite-compatible version
         # ----------------------------------------------------
 
         last = conn.execute(
@@ -185,22 +161,17 @@ def add_unit(
                 SELECT
                     MAX(
                         CAST(
-                            SUBSTRING(unit_code, 2)
-                            AS UNSIGNED
+                            SUBSTR(unit_code, 2) AS INTEGER
                         )
                     )
-
                 FROM blood_inventory
+                WHERE unit_code LIKE 'U%'
             """)
         ).scalar()
 
-
         last = last or 0
 
-        unit_code = (
-            f"U{int(last) + 1:03d}"
-        )
-
+        unit_code = f"U{int(last) + 1:03d}"
 
         # ----------------------------------------------------
         # INSERT UNIT
@@ -221,7 +192,6 @@ def add_unit(
                     created_at,
                     updated_at
                 )
-
                 VALUES
                 (
                     :unit_code,
@@ -232,11 +202,10 @@ def add_unit(
                     :expiry_date,
                     :status,
                     :storage_location,
-                    NOW(),
-                    NOW()
+                    CURRENT_TIMESTAMP,
+                    CURRENT_TIMESTAMP
                 )
             """),
-
             {
                 "unit_code": unit_code,
                 "donor_id": donor_id,
@@ -248,7 +217,6 @@ def add_unit(
                 "storage_location": storage_location,
             }
         )
-
 
     return unit_code
 
@@ -271,18 +239,15 @@ def update_unit(
         result = conn.execute(
             text("""
                 UPDATE blood_inventory
-
                 SET
                     quantity_ml = :quantity_ml,
                     collection_date = :collection_date,
                     expiry_date = :expiry_date,
                     status = :status,
                     storage_location = :storage_location,
-                    updated_at = NOW()
-
+                    updated_at = CURRENT_TIMESTAMP
                 WHERE id = :id
             """),
-
             {
                 "id": unit_id,
                 "quantity_ml": quantity_ml,
@@ -293,9 +258,7 @@ def update_unit(
             }
         )
 
-
         if result.rowcount == 0:
-
             raise ValueError(
                 "Blood unit not found."
             )
@@ -317,9 +280,7 @@ def delete_unit(unit_id):
             text("""
                 SELECT
                     COUNT(*)
-
                 FROM blood_distribution
-
                 WHERE inventory_id = :id
             """),
             {
@@ -327,14 +288,11 @@ def delete_unit(unit_id):
             }
         ).scalar()
 
-
         if used:
-
             raise ValueError(
                 "This unit has distribution records "
                 "and cannot be deleted."
             )
-
 
         # ----------------------------------------------------
         # DELETE
@@ -343,7 +301,6 @@ def delete_unit(unit_id):
         result = conn.execute(
             text("""
                 DELETE FROM blood_inventory
-
                 WHERE id = :id
             """),
             {
@@ -351,9 +308,8 @@ def delete_unit(unit_id):
             }
         )
 
-
         if result.rowcount == 0:
-
             raise ValueError(
                 "Blood unit not found."
             )
+
