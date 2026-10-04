@@ -8,8 +8,8 @@ def log_activity(user_id, action, details=""):
         with engine.begin() as conn:
             conn.execute(
                 text("""
-                    INSERT INTO activity_logs (user_id, action, details, created_at, updated_at)
-                    VALUES (:user_id, :action, :details, NOW(), NOW())
+              INSERT INTO activity_logs (user_id, action, details, created_at, updated_at)
+VALUES (:user_id, :action, :details, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
                 """),
                 {"user_id": user_id, "action": action, "details": details},
             )

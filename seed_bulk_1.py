@@ -96,9 +96,9 @@ with engine.begin() as conn:
             INSERT INTO donors
                 (donor_code, full_name, gender, date_of_birth, blood_group, phone,
                  email, city, last_donation_date, is_eligible, created_at, updated_at)
-            VALUES
-                (:donor_code, :full_name, :gender, :date_of_birth, :blood_group, :phone,
-                 :email, :city, NULL, 1, NOW(), NOW())
+           VALUES
+    (:donor_code, :full_name, :gender, :date_of_birth, :blood_group, :phone,
+     :email, :city, NULL, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
         """),
         make_donors(last_donor),
     )
@@ -146,8 +146,8 @@ with engine.begin() as conn:
                 (unit_code, donor_id, blood_group, quantity_ml, collection_date,
                  expiry_date, status, storage_location, created_at, updated_at)
             VALUES
-                (:unit_code, :donor_id, :blood_group, :quantity_ml, :collection_date,
-                 :expiry_date, :status, :storage_location, :created_at, NOW())
+    (:unit_code, :donor_id, :blood_group, :quantity_ml, :collection_date,
+     :expiry_date, :status, :storage_location, :created_at, CURRENT_TIMESTAMP)
         """),
         units,
     )

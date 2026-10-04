@@ -1,11 +1,6 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
-/* =========================================================
-   BLOODCARE — PREMIUM HEALTHCARE UI
-   Master stylesheet
-   ========================================================= */
-
 :root {
     --primary: #b3122d;
     --primary-dark: #8e0e24;
@@ -54,9 +49,6 @@
 }
 
 
-/* =========================================================
-   GLOBAL
-   ========================================================= */
 
 html {
     scroll-behavior: smooth;

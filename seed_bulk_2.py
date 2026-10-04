@@ -142,9 +142,9 @@ with engine.begin() as conn:
                     (request_code, patient_name, patient_age, hospital_name, blood_group,
                      units_required, urgency, status, requested_by, request_date,
                      created_at, updated_at)
-                VALUES
-                    (:code, :patient, :age, :hospital, :group, :units, :urgency,
-                     :status, :by, :rdate, :created, NOW())
+               VALUES
+    (:code, :patient, :age, :hospital, :group, :units, :urgency,
+     :status, :by, :rdate, :created, CURRENT_TIMESTAMP)
             """),
             {
                 "code": f"R{n:03d}", "patient": patient, "age": random.randint(3, 80),
@@ -173,8 +173,8 @@ with engine.begin() as conn:
                          patient_name, quantity_ml, issue_date, issued_by, status,
                          created_at, updated_at)
                     VALUES
-                        (:code, :req, :inv, :hospital, :patient, :qty, :idate, :by,
-                         'Completed', :created, NOW())
+    (:code, :req, :inv, :hospital, :patient, :qty, :idate, :by,
+     'Completed', :created, CURRENT_TIMESTAMP)
                 """),
                 rows,
             )
