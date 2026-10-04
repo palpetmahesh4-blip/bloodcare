@@ -1,3 +1,4 @@
+
 import streamlit as st
 
 from activity_service import log_activity
@@ -18,6 +19,10 @@ from ui import load_css, topbar
 from search_page import render_search_results
 
 
+# ============================================================
+# PAGE CONFIGURATION
+# ============================================================
+
 st.set_page_config(
     page_title="BloodCare",
     page_icon="🩸",
@@ -26,12 +31,19 @@ st.set_page_config(
 )
 
 
+# ============================================================
+# LOAD CSS
+# ============================================================
+
 try:
     load_css()
 except Exception:
     pass
 
 
+# ============================================================
+# LOGIN / SIGNUP STYLES
+# ============================================================
 
 st.markdown(
     """
@@ -163,6 +175,10 @@ st.markdown(
 )
 
 
+# ============================================================
+# SIDEBAR MENU
+# ============================================================
+
 MENU = [
     "📊 Dashboard",
     "🩸 Inventory",
@@ -176,13 +192,23 @@ MENU = [
 ]
 
 
+# ============================================================
+# AUTHENTICATION
+# ============================================================
 
 if "user" not in st.session_state:
 
+    # --------------------------------------------------------
+    # DEFAULT AUTH PAGE
+    # --------------------------------------------------------
 
     if "auth_page" not in st.session_state:
         st.session_state["auth_page"] = "🔐 Sign In"
 
+
+    # --------------------------------------------------------
+    # AUTH LAYOUT
+    # --------------------------------------------------------
 
     left_col, right_col = st.columns(
         [1.05, 0.95],
@@ -190,6 +216,9 @@ if "user" not in st.session_state:
     )
 
 
+    # ========================================================
+    # LEFT SIDE — BRANDING
+    # ========================================================
 
     with left_col:
 
@@ -260,6 +289,10 @@ if "user" not in st.session_state:
         )
 
 
+    # ========================================================
+    # RIGHT SIDE — AUTHENTICATION
+    # ========================================================
+
     with right_col:
 
         st.markdown(
@@ -276,6 +309,10 @@ if "user" not in st.session_state:
 
         st.write("")
 
+
+        # ----------------------------------------------------
+        # AUTH PAGE SWITCH
+        # ----------------------------------------------------
 
         selected_auth = st.radio(
             "Authentication",
@@ -298,16 +335,27 @@ if "user" not in st.session_state:
         st.write("")
 
 
+        # ====================================================
+        # SIGN IN
+        # ====================================================
+
         if selected_auth == "🔐 Sign In":
 
+            # ------------------------------------------------
+            # SIGNUP SUCCESS MESSAGE
+            # ------------------------------------------------
 
-            if st.session_state.get("signup_success", False):
+            if st.session_state.get(
+                "signup_success",
+                False,
+            ):
 
                 st.success(
-                    "✅ Account created successfully! "
-                    "You can now sign in with your new account."
+                    "🎉 Account created successfully! "
+                    "Your account is ready. Please sign in below."
                 )
 
+                # Message is shown once.
                 st.session_state["signup_success"] = False
 
 
@@ -320,12 +368,20 @@ if "user" not in st.session_state:
             )
 
 
+            # ------------------------------------------------
+            # EMAIL
+            # ------------------------------------------------
+
             email = st.text_input(
                 "Email",
                 placeholder="Enter your email",
                 key="login_email",
             )
 
+
+            # ------------------------------------------------
+            # PASSWORD
+            # ------------------------------------------------
 
             password = st.text_input(
                 "Password",
@@ -337,6 +393,10 @@ if "user" not in st.session_state:
 
             st.write("")
 
+
+            # ------------------------------------------------
+            # SIGN IN BUTTON
+            # ------------------------------------------------
 
             if st.button(
                 "Sign In",
@@ -388,6 +448,9 @@ if "user" not in st.session_state:
                         )
 
 
+        # ====================================================
+        # CREATE ACCOUNT
+        # ====================================================
 
         else:
 
@@ -400,6 +463,15 @@ if "user" not in st.session_state:
             )
 
 
+            # ------------------------------------------------
+            # SIGNUP FORM
+            # ------------------------------------------------
+            #
+            # IMPORTANT:
+            # clear_on_submit=False prevents Streamlit from
+            # clearing the fields before the redirect.
+            #
+
             with st.form(
                 "signup_form",
                 clear_on_submit=False,
@@ -408,12 +480,14 @@ if "user" not in st.session_state:
                 full_name = st.text_input(
                     "Full Name",
                     placeholder="Enter your full name",
+                    key="signup_full_name",
                 )
 
 
                 email = st.text_input(
                     "Email",
                     placeholder="Enter your email",
+                    key="signup_email",
                 )
 
 
@@ -421,6 +495,7 @@ if "user" not in st.session_state:
                     "Password",
                     type="password",
                     placeholder="Minimum 8 characters",
+                    key="signup_password",
                 )
 
 
@@ -428,6 +503,7 @@ if "user" not in st.session_state:
                     "Confirm Password",
                     type="password",
                     placeholder="Re-enter your password",
+                    key="signup_confirm_password",
                 )
 
 
@@ -450,8 +526,15 @@ if "user" not in st.session_state:
                 )
 
 
+            # ------------------------------------------------
+            # PROCESS REGISTRATION
+            # ------------------------------------------------
 
             if submitted:
+
+                # --------------------------------------------
+                # NAME VALIDATION
+                # --------------------------------------------
 
                 if not full_name.strip():
 
@@ -459,11 +542,21 @@ if "user" not in st.session_state:
                         "Please enter your full name."
                     )
 
+
+                # --------------------------------------------
+                # EMAIL VALIDATION
+                # --------------------------------------------
+
                 elif not email.strip():
 
                     st.error(
                         "Please enter your email."
                     )
+
+
+                # --------------------------------------------
+                # PASSWORD VALIDATION
+                # --------------------------------------------
 
                 elif not password:
 
@@ -471,11 +564,17 @@ if "user" not in st.session_state:
                         "Please enter a password."
                     )
 
+
                 elif len(password) < 8:
 
                     st.error(
                         "Password must be at least 8 characters."
                     )
+
+
+                # --------------------------------------------
+                # CONFIRM PASSWORD
+                # --------------------------------------------
 
                 elif password != confirm_password:
 
@@ -483,33 +582,67 @@ if "user" not in st.session_state:
                         "Passwords do not match."
                     )
 
+
+                # --------------------------------------------
+                # CREATE ACCOUNT
+                # --------------------------------------------
+
                 else:
 
                     try:
 
-                     
-
-                        create_user(
-                            full_name,
-                            email,
+                        created_email = create_user(
+                            full_name.strip(),
+                            email.strip().lower(),
                             password,
                             "staff",
                         )
 
 
+                        # ====================================
+                        # ACCOUNT CREATED SUCCESSFULLY
+                        # ====================================
+
+                        st.session_state["signup_success"] = True
+
+
+                        # ====================================
+                        # SWITCH TO SIGN IN
+                        # ====================================
 
                         st.session_state["auth_page"] = (
                             "🔐 Sign In"
                         )
 
 
-                        st.session_state["signup_success"] = True
+                        # ====================================
+                        # AUTO-FILL CREATED EMAIL
+                        # ====================================
+
+                        st.session_state["login_email"] = (
+                            created_email
+                        )
 
 
-        
+                        # ====================================
+                        # CLEAR LOGIN PASSWORD
+                        # ====================================
+
+                        st.session_state["login_password"] = ""
+
+
+                        # ====================================
+                        # IMPORTANT:
+                        # Force Streamlit to immediately
+                        # render the Sign In screen.
+                        # ====================================
 
                         st.rerun()
 
+
+                    # ----------------------------------------
+                    # DUPLICATE / VALIDATION ERROR
+                    # ----------------------------------------
 
                     except ValueError as e:
 
@@ -518,6 +651,10 @@ if "user" not in st.session_state:
                         )
 
 
+                    # ----------------------------------------
+                    # DATABASE / SYSTEM ERROR
+                    # ----------------------------------------
+
                     except Exception as e:
 
                         st.error(
@@ -525,8 +662,11 @@ if "user" not in st.session_state:
                         )
 
 
-        st.write("")
+        # ====================================================
+        # FOOTER
+        # ====================================================
 
+        st.write("")
 
         st.caption(
             "🔒 Protected healthcare management system"
@@ -537,10 +677,16 @@ if "user" not in st.session_state:
         )
 
 
+    # --------------------------------------------------------
+    # STOP APPLICATION UNTIL LOGIN
+    # --------------------------------------------------------
 
     st.stop()
 
 
+# ============================================================
+# LOGGED-IN USER
+# ============================================================
 
 user = st.session_state["user"]
 
@@ -555,6 +701,9 @@ user_role = str(
 )
 
 
+# ============================================================
+# SIDEBAR
+# ============================================================
 
 with st.sidebar:
 
@@ -595,6 +744,9 @@ with st.sidebar:
     st.write("")
 
 
+    # --------------------------------------------------------
+    # SIGN OUT
+    # --------------------------------------------------------
 
     if st.button(
         "↪ Sign out",
@@ -619,6 +771,9 @@ with st.sidebar:
         st.rerun()
 
 
+# ============================================================
+# PAGE CHANGE HANDLING
+# ============================================================
 
 if st.session_state.get("last_page") != page:
 
@@ -626,6 +781,10 @@ if st.session_state.get("last_page") != page:
 
     st.session_state["global_search"] = ""
 
+
+# ============================================================
+# SYNC NOTIFICATIONS
+# ============================================================
 
 try:
 
@@ -636,6 +795,10 @@ except Exception:
     pass
 
 
+# ============================================================
+# UNREAD NOTIFICATIONS
+# ============================================================
+
 try:
 
     unread_count = get_unread_count()
@@ -645,7 +808,9 @@ except Exception:
     unread_count = 0
 
 
-
+# ============================================================
+# TOP BAR
+# ============================================================
 
 try:
 
@@ -660,6 +825,9 @@ except Exception:
     pass
 
 
+# ============================================================
+# GLOBAL SEARCH
+# ============================================================
 
 query = (
     st.session_state.get("global_search") or ""
@@ -670,6 +838,10 @@ if len(query) >= 2:
 
     render_search_results(query)
 
+
+# ============================================================
+# PAGE ROUTING
+# ============================================================
 
 elif page.endswith("Dashboard"):
 
@@ -725,3 +897,4 @@ else:
     st.info(
         "This page will be available in the next phase."
     )
+

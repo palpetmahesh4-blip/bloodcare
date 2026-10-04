@@ -98,7 +98,7 @@ def _users_tab(current_user):
 
     event = st.dataframe(
         df,
-        use_container_width=True,
+        width="stretch",
         hide_index=True,
         on_select="rerun",
         selection_mode="single-row",
@@ -162,7 +162,7 @@ def _logs_tab():
     })[["When", "User", "Action", "Details"]]
 
     st.caption(f"{len(df)} log entries (latest 200 shown at most)")
-    st.dataframe(df, use_container_width=True, hide_index=True)
+    st.dataframe(df, width="stretch", hide_index=True)
 
 
 def render_settings():

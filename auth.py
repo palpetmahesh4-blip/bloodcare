@@ -1,22 +1,88 @@
-import bcrypt
-from sqlalchemy.orm import Session
-from database import engine
-from models import User
 
+import bcrypt
+
+from sqlalchemy import text
+from database import engine
+
+
+# ============================================================
+# AUTHENTICATE USER
+# ============================================================
 
 def authenticate(email, password):
-    """Sahi email/password pe user ka dict return karta hai, warna None."""
-    email = email.strip().lower()
+    """
+    Authenticate an active BloodCare user.
+
+    Returns:
+        dict -> valid login
+        None -> invalid email/password
+    """
+
+    # --------------------------------------------------------
+    # CLEAN INPUT
+    # --------------------------------------------------------
+
+    email = str(email or "").strip().lower()
+    password = str(password or "")
+
     if not email or not password:
         return None
 
-    with Session(engine) as session:
-        user = session.query(User).filter_by(email=email, is_active=True).first()
-        if user is None:
-            return None
+    # --------------------------------------------------------
+    # FIND ACTIVE USER
+    # --------------------------------------------------------
 
-        ok = bcrypt.checkpw(password.encode("utf-8"), user.password_hash.encode("utf-8"))
-        if not ok:
-            return None
+    with engine.connect() as conn:
 
-        return {"id": user.id, "name": user.full_name, "email": user.email, "role": user.role}
+        user = conn.execute(
+            text("""
+                SELECT
+                    id,
+                    full_name,
+                    email,
+                    password_hash,
+                    role,
+                    is_active
+                FROM users
+                WHERE LOWER(TRIM(email)) = :email
+                  AND is_active = 1
+                LIMIT 1
+            """),
+            {
+                "email": email
+            }
+        ).mappings().first()
+
+    # --------------------------------------------------------
+    # USER NOT FOUND
+    # --------------------------------------------------------
+
+    if user is None:
+        return None
+
+    # --------------------------------------------------------
+    # CHECK PASSWORD
+    # --------------------------------------------------------
+
+    try:
+        password_ok = bcrypt.checkpw(
+            password.encode("utf-8"),
+            user["password_hash"].encode("utf-8")
+        )
+    except (ValueError, TypeError, AttributeError):
+        return None
+
+    if not password_ok:
+        return None
+
+    # --------------------------------------------------------
+    # LOGIN SUCCESS
+    # --------------------------------------------------------
+
+    return {
+        "id": user["id"],
+        "name": user["full_name"],
+        "email": user["email"],
+        "role": user["role"],
+    }
+
