@@ -2,6 +2,7 @@ import streamlit as st
 
 from activity_service import log_activity
 from auth import authenticate
+from user_service import create_user
 from dashboard import render_dashboard
 from distribution_page import render_distribution
 from donor_page import render_donors
@@ -17,10 +18,6 @@ from ui import load_css, topbar
 from search_page import render_search_results
 
 
-# ============================================================
-# PAGE CONFIG
-# ============================================================
-
 st.set_page_config(
     page_title="BloodCare",
     page_icon="🩸",
@@ -29,27 +26,16 @@ st.set_page_config(
 )
 
 
-# ============================================================
-# GLOBAL CSS
-# ============================================================
-
 try:
     load_css()
 except Exception:
     pass
 
 
-# ============================================================
-# LOGIN PAGE CSS
-# ============================================================
 
 st.markdown(
     """
     <style>
-
-    /* ======================================================
-       LOGIN BRAND
-       ====================================================== */
 
     .bloodcare-login-title {
         font-size: 42px;
@@ -87,11 +73,6 @@ st.markdown(
         margin-right: 9px;
     }
 
-
-    /* ======================================================
-       LOGIN FORM
-       ====================================================== */
-
     .login-title {
         font-size: 30px;
         font-weight: 800;
@@ -106,15 +87,9 @@ st.markdown(
         margin-bottom: 25px;
     }
 
-
-    /* ======================================================
-       BLOODCARE LOGO
-       ====================================================== */
-
     .bloodcare-logo {
         width: 70px;
         height: 70px;
-
         border-radius: 18px;
 
         background: linear-gradient(
@@ -135,9 +110,6 @@ st.markdown(
 
         position: relative;
     }
-
-
-    /* White Shield */
 
     .bloodcare-logo::before {
         content: "";
@@ -160,9 +132,6 @@ st.markdown(
             8% 15%
         );
     }
-
-
-    /* Red Blood Drop */
 
     .bloodcare-logo::after {
         content: "";
@@ -194,10 +163,6 @@ st.markdown(
 )
 
 
-# ============================================================
-# MENU
-# ============================================================
-
 MENU = [
     "📊 Dashboard",
     "🩸 Inventory",
@@ -211,11 +176,13 @@ MENU = [
 ]
 
 
-# ============================================================
-# LOGIN PAGE
-# ============================================================
 
 if "user" not in st.session_state:
+
+
+    if "auth_page" not in st.session_state:
+        st.session_state["auth_page"] = "🔐 Sign In"
+
 
     left_col, right_col = st.columns(
         [1.05, 0.95],
@@ -223,25 +190,19 @@ if "user" not in st.session_state:
     )
 
 
-    # ========================================================
-    # LEFT BRAND SECTION
-    # ========================================================
 
     with left_col:
 
-        # Logo
         st.markdown(
             '<div class="bloodcare-logo"></div>',
             unsafe_allow_html=True,
         )
 
-        # Brand name
         st.markdown(
             '<div class="bloodcare-login-title">BloodCare</div>',
             unsafe_allow_html=True,
         )
 
-        # Subtitle
         st.markdown(
             '<div class="bloodcare-login-subtitle">'
             'BLOOD BANK MANAGEMENT SYSTEM'
@@ -249,7 +210,6 @@ if "user" not in st.session_state:
             unsafe_allow_html=True,
         )
 
-        # Description
         st.markdown(
             '<div class="bloodcare-description">'
             'A smarter way to manage blood inventory, '
@@ -259,7 +219,6 @@ if "user" not in st.session_state:
             unsafe_allow_html=True,
         )
 
-        # Features
         st.markdown(
             '<div class="bloodcare-feature">'
             '<span class="bloodcare-feature-icon">✓</span>'
@@ -301,111 +260,276 @@ if "user" not in st.session_state:
         )
 
 
-    # ========================================================
-    # RIGHT LOGIN SECTION
-    # ========================================================
-
     with right_col:
 
         st.markdown(
-            '<div class="login-title">Welcome back</div>',
+            '<div class="login-title">Welcome to BloodCare</div>',
             unsafe_allow_html=True,
         )
 
         st.markdown(
             '<div class="login-subtitle">'
-            'Sign in to continue to BloodCare.'
+            'Sign in to your account or create a new staff account.'
             '</div>',
             unsafe_allow_html=True,
         )
 
+        st.write("")
 
-        # ----------------------------------------------------
-        # EMAIL
-        # ----------------------------------------------------
 
-        email = st.text_input(
-            "Email",
-            placeholder="Enter your email",
+        selected_auth = st.radio(
+            "Authentication",
+            [
+                "🔐 Sign In",
+                "➕ Create Account",
+            ],
+            index=(
+                0
+                if st.session_state["auth_page"] == "🔐 Sign In"
+                else 1
+            ),
+            horizontal=True,
+            label_visibility="collapsed",
         )
 
 
-        # ----------------------------------------------------
-        # PASSWORD
-        # ----------------------------------------------------
-
-        password = st.text_input(
-            "Password",
-            type="password",
-            placeholder="Enter your password",
-        )
-
+        st.session_state["auth_page"] = selected_auth
 
         st.write("")
 
 
-        # ----------------------------------------------------
-        # LOGIN BUTTON
-        # ----------------------------------------------------
+        if selected_auth == "🔐 Sign In":
 
-        if st.button(
-            "Sign In",
-            type="primary",
-            width="stretch",
-        ):
 
-            if not email.strip():
+            if st.session_state.get("signup_success", False):
 
-                st.error(
-                    "Please enter your email."
+                st.success(
+                    "✅ Account created successfully! "
+                    "You can now sign in with your new account."
                 )
 
-            elif not password:
+                st.session_state["signup_success"] = False
 
-                st.error(
-                    "Please enter your password."
-                )
 
-            else:
+            st.subheader(
+                "Welcome back"
+            )
 
-                try:
+            st.caption(
+                "Sign in to continue to BloodCare."
+            )
 
-                    logged_user = authenticate(
-                        email.strip(),
-                        password,
+
+            email = st.text_input(
+                "Email",
+                placeholder="Enter your email",
+                key="login_email",
+            )
+
+
+            password = st.text_input(
+                "Password",
+                type="password",
+                placeholder="Enter your password",
+                key="login_password",
+            )
+
+
+            st.write("")
+
+
+            if st.button(
+                "Sign In",
+                type="primary",
+                width="stretch",
+                key="signin_button",
+            ):
+
+                if not email.strip():
+
+                    st.error(
+                        "Please enter your email."
                     )
 
+                elif not password:
 
-                    if logged_user:
+                    st.error(
+                        "Please enter your password."
+                    )
 
-                        st.session_state["user"] = logged_user
+                else:
+
+                    try:
+
+                        logged_user = authenticate(
+                            email.strip(),
+                            password,
+                        )
+
+
+                        if logged_user:
+
+                            st.session_state["user"] = logged_user
+
+                            st.rerun()
+
+
+                        else:
+
+                            st.error(
+                                "Invalid email or password."
+                            )
+
+
+                    except Exception as e:
+
+                        st.error(
+                            f"Login error: {e}"
+                        )
+
+
+
+        else:
+
+            st.subheader(
+                "Create your account"
+            )
+
+            st.caption(
+                "Register a new BloodCare staff account."
+            )
+
+
+            with st.form(
+                "signup_form",
+                clear_on_submit=False,
+            ):
+
+                full_name = st.text_input(
+                    "Full Name",
+                    placeholder="Enter your full name",
+                )
+
+
+                email = st.text_input(
+                    "Email",
+                    placeholder="Enter your email",
+                )
+
+
+                password = st.text_input(
+                    "Password",
+                    type="password",
+                    placeholder="Minimum 8 characters",
+                )
+
+
+                confirm_password = st.text_input(
+                    "Confirm Password",
+                    type="password",
+                    placeholder="Re-enter your password",
+                )
+
+
+                st.write("")
+
+
+                st.info(
+                    "New accounts are registered as Staff. "
+                    "Admin access is managed separately."
+                )
+
+
+                st.write("")
+
+
+                submitted = st.form_submit_button(
+                    "Create Account",
+                    type="primary",
+                    width="stretch",
+                )
+
+
+
+            if submitted:
+
+                if not full_name.strip():
+
+                    st.error(
+                        "Please enter your full name."
+                    )
+
+                elif not email.strip():
+
+                    st.error(
+                        "Please enter your email."
+                    )
+
+                elif not password:
+
+                    st.error(
+                        "Please enter a password."
+                    )
+
+                elif len(password) < 8:
+
+                    st.error(
+                        "Password must be at least 8 characters."
+                    )
+
+                elif password != confirm_password:
+
+                    st.error(
+                        "Passwords do not match."
+                    )
+
+                else:
+
+                    try:
+
+                     
+
+                        create_user(
+                            full_name,
+                            email,
+                            password,
+                            "staff",
+                        )
+
+
+
+                        st.session_state["auth_page"] = (
+                            "🔐 Sign In"
+                        )
+
+
+                        st.session_state["signup_success"] = True
+
+
+        
 
                         st.rerun()
 
 
-                    else:
+                    except ValueError as e:
 
                         st.error(
-                            "Invalid email or password."
+                            str(e)
                         )
 
 
-                except Exception as e:
+                    except Exception as e:
 
-                    st.error(
-                        f"Login error: {e}"
-                    )
+                        st.error(
+                            f"Account creation error: {e}"
+                        )
 
-
-        # ----------------------------------------------------
-        # FOOTER
-        # NO HTML HERE
-        # ----------------------------------------------------
 
         st.write("")
 
+
         st.caption(
-            "Protected healthcare management system"
+            "🔒 Protected healthcare management system"
         )
 
         st.caption(
@@ -413,13 +537,10 @@ if "user" not in st.session_state:
         )
 
 
-    # Stop login page
+
     st.stop()
 
 
-# ============================================================
-# USER SESSION
-# ============================================================
 
 user = st.session_state["user"]
 
@@ -434,18 +555,12 @@ user_role = str(
 )
 
 
-# ============================================================
-# SIDEBAR
-# NO CUSTOM HTML
-# ============================================================
 
 with st.sidebar:
 
-    # --------------------------------------------------------
-    # BRAND
-    # --------------------------------------------------------
-
-    st.markdown("## BloodCare")
+    st.markdown(
+        "## BloodCare"
+    )
 
     st.caption(
         "BLOOD BANK MANAGEMENT"
@@ -454,13 +569,10 @@ with st.sidebar:
     st.divider()
 
 
-    # --------------------------------------------------------
-    # MAIN MENU
-    # --------------------------------------------------------
-
     st.caption(
         "MAIN MENU"
     )
+
 
     page = st.radio(
         "Menu",
@@ -471,10 +583,6 @@ with st.sidebar:
 
     st.divider()
 
-
-    # --------------------------------------------------------
-    # USER PROFILE
-    # --------------------------------------------------------
 
     st.write(
         f"**{user_name}**"
@@ -487,9 +595,6 @@ with st.sidebar:
     st.write("")
 
 
-    # --------------------------------------------------------
-    # SIGN OUT
-    # --------------------------------------------------------
 
     if st.button(
         "↪ Sign out",
@@ -514,9 +619,6 @@ with st.sidebar:
         st.rerun()
 
 
-# ============================================================
-# CLEAR SEARCH WHEN PAGE CHANGES
-# ============================================================
 
 if st.session_state.get("last_page") != page:
 
@@ -524,9 +626,6 @@ if st.session_state.get("last_page") != page:
 
     st.session_state["global_search"] = ""
 
-# ============================================================
-# SYNCHRONIZE ALERTS
-# ============================================================
 
 try:
 
@@ -537,10 +636,6 @@ except Exception:
     pass
 
 
-# ============================================================
-# UNREAD NOTIFICATIONS
-# ============================================================
-
 try:
 
     unread_count = get_unread_count()
@@ -550,9 +645,7 @@ except Exception:
     unread_count = 0
 
 
-# ============================================================
-# TOPBAR
-# ============================================================
+
 
 try:
 
@@ -567,11 +660,10 @@ except Exception:
     pass
 
 
-# ============================================================
-# PAGE ROUTING
-# ============================================================
 
-query = (st.session_state.get("global_search") or "").strip()
+query = (
+    st.session_state.get("global_search") or ""
+).strip()
 
 
 if len(query) >= 2:
