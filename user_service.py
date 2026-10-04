@@ -2,7 +2,6 @@
 import bcrypt
 
 from sqlalchemy import text
-
 from database import engine
 
 
@@ -15,7 +14,6 @@ def change_password(
     current_password,
     new_password
 ):
-
     if len(new_password) < 8:
         raise ValueError(
             "New password must be at least 8 characters."
@@ -23,8 +21,7 @@ def change_password(
 
     if new_password == current_password:
         raise ValueError(
-            "New password must be different from "
-            "the current one."
+            "New password must be different from the current one."
         )
 
     with engine.begin() as conn:
@@ -64,12 +61,12 @@ def change_password(
             text("""
                 UPDATE users
                 SET
-                    password_hash = :h,
+                    password_hash = :password_hash,
                     updated_at = CURRENT_TIMESTAMP
                 WHERE id = :id
             """),
             {
-                "h": new_hash,
+                "password_hash": new_hash,
                 "id": user_id
             }
         )
@@ -92,9 +89,7 @@ def list_users():
                     role,
                     is_active,
                     created_at
-
                 FROM users
-
                 ORDER BY
                     is_active DESC,
                     role ASC,
@@ -103,8 +98,8 @@ def list_users():
         ).mappings().all()
 
     return [
-        dict(r)
-        for r in rows
+        dict(row)
+        for row in rows
     ]
 
 
@@ -116,14 +111,25 @@ def create_user(
     full_name,
     email,
     password,
-    role
+    role="staff"
 ):
+    """
+    Create a new BloodCare user.
 
-    full_name = full_name.strip()
-    email = email.strip().lower()
+    New accounts created from the registration page
+    are normally Staff accounts.
+    """
 
     # --------------------------------------------------------
-    # VALIDATION
+    # CLEAN INPUT
+    # --------------------------------------------------------
+
+    full_name = str(full_name or "").strip()
+    email = str(email or "").strip().lower()
+    password = str(password or "")
+
+    # --------------------------------------------------------
+    # VALIDATE NAME
     # --------------------------------------------------------
 
     if not full_name:
@@ -131,18 +137,37 @@ def create_user(
             "Please enter the full name."
         )
 
+    if len(full_name) < 2:
+        raise ValueError(
+            "Please enter a valid full name."
+        )
+
+    # --------------------------------------------------------
+    # VALIDATE EMAIL
+    # --------------------------------------------------------
+
     if (
         "@" not in email
         or "." not in email.split("@")[-1]
+        or email.startswith("@")
+        or email.endswith("@")
     ):
         raise ValueError(
             "Please enter a valid email address."
         )
 
+    # --------------------------------------------------------
+    # VALIDATE PASSWORD
+    # --------------------------------------------------------
+
     if len(password) < 8:
         raise ValueError(
             "Password must be at least 8 characters."
         )
+
+    # --------------------------------------------------------
+    # VALIDATE ROLE
+    # --------------------------------------------------------
 
     if role not in (
         "admin",
@@ -153,35 +178,51 @@ def create_user(
         )
 
     # --------------------------------------------------------
-    # PASSWORD HASH
-    # --------------------------------------------------------
-
-    password_hash = bcrypt.hashpw(
-        password.encode("utf-8"),
-        bcrypt.gensalt()
-    ).decode("utf-8")
-
-    # --------------------------------------------------------
-    # INSERT USER
+    # CHECK EXISTING USER
     # --------------------------------------------------------
 
     with engine.begin() as conn:
 
-        exists = conn.execute(
+        existing_user = conn.execute(
             text("""
-                SELECT COUNT(*)
+                SELECT
+                    id,
+                    email,
+                    is_active
                 FROM users
-                WHERE email = :email
+                WHERE LOWER(TRIM(email)) = :email
+                LIMIT 1
             """),
             {
                 "email": email
             }
-        ).scalar()
+        ).mappings().first()
 
-        if exists:
+        if existing_user is not None:
+
+            if existing_user["is_active"]:
+                raise ValueError(
+                    "A user with this email already exists."
+                )
+
             raise ValueError(
-                "A user with this email already exists."
+                "An account with this email already exists "
+                "but is currently inactive. Please contact "
+                "the administrator."
             )
+
+        # ----------------------------------------------------
+        # HASH PASSWORD
+        # ----------------------------------------------------
+
+        password_hash = bcrypt.hashpw(
+            password.encode("utf-8"),
+            bcrypt.gensalt()
+        ).decode("utf-8")
+
+        # ----------------------------------------------------
+        # INSERT NEW USER
+        # ----------------------------------------------------
 
         conn.execute(
             text("""
@@ -195,7 +236,6 @@ def create_user(
                     created_at,
                     updated_at
                 )
-
                 VALUES
                 (
                     :full_name,
@@ -211,7 +251,7 @@ def create_user(
                 "full_name": full_name,
                 "email": email,
                 "password_hash": password_hash,
-                "role": role,
+                "role": role
             }
         )
 
@@ -238,18 +278,22 @@ def set_user_active(
 
     with engine.begin() as conn:
 
-        conn.execute(
+        result = conn.execute(
             text("""
                 UPDATE users
-
                 SET
                     is_active = :active,
                     updated_at = CURRENT_TIMESTAMP
-
                 WHERE id = :id
             """),
             {
                 "active": 1 if active else 0,
-                "id": user_id,
+                "id": user_id
             }
         )
+
+        if result.rowcount == 0:
+            raise ValueError(
+                "User not found."
+            )
+
